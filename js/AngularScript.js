@@ -1,22 +1,29 @@
 // Application module
-// var crudApp = angular.module('crudApp',[]);
-// crudApp.controller('DbaseController',['$scope', '$http', function($scope,$http) {
-//
-//   //function to get employee details from the database
-//   getInfo();
-//   function getInfo() {
-//     // sending request to readEmployee.php files
-//     $http.get('CRUD/readEmployee.php').then(function(data) {
-//       // Stored the returned data into scope
-//       $scope.details = data;
-//     });
-//   }
-// }])
-
 var crudApp = angular.module('crudApp', []);
 crudApp.controller('DbaseController', function($scope, $http) {
-  $http.get("CRUD/readEmployee.php").then(function (response) {
+  //function to get employee details from the database
+  getEmployeeDetails();
+  function getEmployeeDetails() {
+  $http.get('CRUD/readEmployee.php').then(function (response) {
       $scope.details = response.data;
-      console.log($scope.details);
   });
+ }
+
+// Delete an Employee
+$scope.deleteEmployee = function(data) {
+  $http({
+    method: "POST",
+    url: "CRUD/deleteEmployee.php",
+    dataType: 'json',
+    data: {"del_id":data},
+    headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" }
+}).then(function(response) {
+  //Success
+  if (response == true) {
+  getEmployeeDetails();
+  }
+ }, function(error) {
+ //Error
+ });
+}
 });
