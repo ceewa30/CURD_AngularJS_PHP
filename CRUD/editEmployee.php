@@ -4,19 +4,15 @@ require_once dirname(__DIR__).'/DBase/DBConnection.php';
 // mysqli query to fetch all data from database
 // Takes raw data from the request
 $data = json_decode(file_get_contents("php://input"));
-
-// Converts it into a PHP object
-
-$id = $data->emp_id;
-
-$query = "SELECT * from emp_details WHERE emp_id=$id";
-$result = mysqli_query($con, $query);
-$arr = array();
-if(mysqli_num_rows($result) != 0) {
-while($row = mysqli_fetch_assoc($result)) {
-$arr[] = $row;
-}
-}
-// Return json array containing data from the databasecon
-echo $json_info = json_encode($arr);
+var_dump($data);
+$emp_id = mysqli_real_escape_string($con, $data->emp_id);
+$emp_name = mysqli_real_escape_string($con, $data->emp_name);
+$emp_email = mysqli_real_escape_string($con, $data->emp_email);
+$emp_gender = mysqli_real_escape_string($con, $data->emp_gender);
+$emp_address = mysqli_real_escape_string($con, $data->emp_address);
+// mysqli insert query
+$query = "UPDATE emp_details SET emp_name = '$emp_name', emp_email = '$emp_email', emp_gender = '$emp_gender', emp_address = '$emp_address' WHERE emp_id=$emp_id";
+// Updating data into database
+mysqli_query($con, $query);
+echo true;
 ?>

@@ -9,8 +9,9 @@ crudApp.controller('DbaseController', function($scope, $http, $element) {
   });
  }
 $scope.show_form = true;
+$scope.addForm = true;
  $scope.formToggle = function() {
-   document.getElementById("empForm").hidden = false;
+   $scope.addForm = false;
  }
 // Create an Employee Details
 $scope.createInfo = function(empInfo) {
@@ -21,43 +22,41 @@ $scope.createInfo = function(empInfo) {
     data: {"emp_name":empInfo.name,"emp_email":empInfo.email,"emp_gender":empInfo.gender,"emp_address":empInfo.address},
     headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" }
 }).then(function(data){
-  console.log(data);
-//  $http.post('CRUD/createEmployee.php',{"emp_name":info.emp_name,"emp_email":info.emp_email,"emp_gender":info.emp_gender,"emp_address":info.emp_address}).then(function(data){
   if (data.status == 200) {
     getEmployeeDetails();
     // Hide details insertion form
-    //document.getElementById("empForm").hidden = true;
     $('#empForm').css('display', 'none');
+    $scope.addForm = true;
   }
 });
 }
+$scope.editForm = true;
 $scope.currentUser = {};
 $scope.editEmployee = function(data) {
 $scope.currentUser = data;
-//console.log($scope.currentUser);
-$('#empForm').slideUp();
-$('#editForm').slideToggle();
-document.getElementById("editForm").hidden = false;
+$scope.show_form = false;
+$scope.editForm = false;
+$('#empForm').hide();
 }
 //Edit an Employee
-// $scope.editEmployee = function(data) {
-//   console.log(data);
-//   $http({
-//     method: "POST",
-//     url: "CRUD/editEmployee.php",
-//     dataType: 'json',
-//     data: {"emp_id":data},
-//     headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" }
-// }).then(function(response) {
-//   console.log(response);
-//   //Success
-//   // if (response.status == 200) {
-//   // getEmployeeDetails();
-//   // }
-//  }, function(error) {
-//  //Error
-//  });
-// }
+$scope.updateEmployee = function(data) {
+  $http({
+    method: "POST",
+    url: "CRUD/editEmployee.php",
+    dataType: 'json',
+    data: {"emp_id":data.emp_id,"emp_name":data.emp_name,"emp_email":data.emp_email,"emp_gender":data.emp_gender,"emp_address":data.emp_address},
+    headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" }
+}).then(function(response) {
+  //Success
+  if (response.status == 200) {
+  getEmployeeDetails();
+  $scope.editForm = true;
+  $scope.show_form = true;
+  }
+ }, function(error) {
+ //Error
+ });
+}
 
 // Delete an Employee
 $scope.deleteEmployee = function(data) {
@@ -75,5 +74,10 @@ $scope.deleteEmployee = function(data) {
  }, function(error) {
  //Error
  });
+}
+$scope.formHide = function(){
+  $scope.addForm = true;
+  $scope.editForm = true;
+  $scope.show_form = true;
 }
 });
